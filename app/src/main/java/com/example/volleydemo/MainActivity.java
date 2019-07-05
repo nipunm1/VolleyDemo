@@ -23,6 +23,7 @@ import com.example.volleydemo.model.Jsontojava;
 import com.example.volleydemo.model.Sirfollowers;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,26 +51,31 @@ List<Sirfollowers> list = new ArrayList<>();
     }
     public void getSirFollowers(){
         String url = "https://api.github.com/users/cmpundhir/followers";
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
-                list = gson.fromJson(response, list.getClass());
-                //Log.d("List1", list.toString());
-                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                RecyclerAdapter recyclerAdapter = new RecyclerAdapter(MainActivity.this, list);
-                recyclerView.setAdapter(recyclerAdapter);
-                //Log.d("activity", response);
-
+                for(int i=0;i<=response.length();i++){
+                    try{
+                        Sirfollowers sirfollowers = gson.fromJson(response.get(i).toString(), Sirfollowers.class);
+                        list.add(sirfollowers);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(MainActivity.this, list);
+                        recyclerView.setAdapter(recyclerAdapter);
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Error : "+error,Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Error : "+error, Toast.LENGTH_LONG);
             }
         });
         RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
+        queue.add(jsonArrayRequest);
     }
     /*public void calljosnwithgsonnjavaclass(){
         String url = "https://api.github.com/users/nipunm1";

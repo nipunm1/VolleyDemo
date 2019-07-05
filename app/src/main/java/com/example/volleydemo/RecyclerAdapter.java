@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.volleydemo.model.Sirfollowers;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         Sirfollowers sirfollowers = list.get(position);
         holder.tv.setText(sirfollowers.getLogin());
         holder.tv2.setText(sirfollowers.getId()+"");
-        holder.img.setImageResource(Integer.parseInt(sirfollowers.getAvatarUrl()));
+        Glide.with(context).load(sirfollowers.getAvatarUrl()).into(holder.img);
     }
 
     @Override
